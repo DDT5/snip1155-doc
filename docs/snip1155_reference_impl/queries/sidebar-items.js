@@ -1,0 +1,1 @@
+initSidebarItems({"fn":[["query","contract query function. See QueryMsg for the api"]]});
