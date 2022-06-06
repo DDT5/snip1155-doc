@@ -705,7 +705,7 @@
         <span class="ident">tx_history_page_size</span>.<span class="ident">unwrap_or</span>(<span class="ident">u32::MAX</span>)
     )<span class="question-mark">?</span>;
 
-    <span class="comment">// create unique list of token_ids that owner has potentially owned. BtreeSet used (rather than Hashset) to have a deterministic order</span>
+    <span class="comment">// create unique list of token_ids that owner has potentially owned. BtreeSet used (rather than Hashset) to have a predictable order</span>
     <span class="kw">let</span> <span class="ident">token_ids</span> <span class="op">=</span> <span class="ident">txs</span>.<span class="ident">into_iter</span>().<span class="ident">map</span>(<span class="op">|</span><span class="ident">tx</span><span class="op">|</span> <span class="ident">tx</span>.<span class="ident">token_id</span>).<span class="ident">collect</span>::<span class="op">&lt;</span><span class="ident">BTreeSet</span><span class="op">&lt;</span><span class="kw">_</span><span class="op">&gt;</span><span class="op">&gt;</span>();
 
     <span class="comment">// get balances for this list of token_ids, only if balance == Some(_), ie: user has had some balance before </span>
@@ -732,7 +732,7 @@
 
     <span class="kw">let</span> <span class="ident">response</span> <span class="op">=</span> <span class="ident">QueryAnswer::TransactionHistory</span> {
         <span class="ident">txs</span>,
-        <span class="ident">total</span>: <span class="prelude-val">Some</span>(<span class="ident">total</span>),
+        <span class="ident">total</span>,
     };
     <span class="ident">to_binary</span>(<span class="kw-2">&amp;</span><span class="ident">response</span>)
 }

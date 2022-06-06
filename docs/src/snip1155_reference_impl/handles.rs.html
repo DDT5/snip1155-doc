@@ -1390,11 +1390,6 @@
 <span id="1385">1385</span>
 <span id="1386">1386</span>
 <span id="1387">1387</span>
-<span id="1388">1388</span>
-<span id="1389">1389</span>
-<span id="1390">1390</span>
-<span id="1391">1391</span>
-<span id="1392">1392</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">cosmwasm_std</span>::{
     <span class="ident">Env</span>, <span class="ident">Extern</span>, <span class="ident">Storage</span>, <span class="ident">Api</span>, <span class="ident">Querier</span>, 
     <span class="ident">InitResponse</span>, <span class="ident">HandleResponse</span>, <span class="ident">Binary</span>, <span class="ident">to_binary</span>, <span class="ident">log</span>,
@@ -1884,22 +1879,17 @@
     <span class="comment">// can sender change metadata? based on i) sender is minter or owner, ii) token_id config allows it or not </span>
     <span class="kw">let</span> <span class="ident">allow_update</span> <span class="op">=</span> <span class="ident">is_owner</span> <span class="op">&amp;&amp;</span> <span class="ident">tkn_conf</span>.<span class="ident">owner_may_update_metadata</span> <span class="op">|</span><span class="op">|</span> <span class="ident">is_minter</span> <span class="op">&amp;&amp;</span> <span class="ident">tkn_conf</span>.<span class="ident">minter_may_update_metadata</span>;
 
-    <span class="comment">// control flow on whether i) sender wants to change metadata, ii) whether it is allowed based on `allow_update`</span>
-    <span class="kw">match</span> (<span class="kw-2">&amp;</span><span class="ident">public_metadata</span>, <span class="kw-2">&amp;</span><span class="ident">private_metadata</span>) {
-        (<span class="prelude-val">None</span>, <span class="prelude-val">None</span>) =&gt; (),
-        <span class="kw">_</span> =&gt; {
-            <span class="kw">match</span> <span class="ident">allow_update</span> {
-                <span class="bool-val">false</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">StdError::generic_err</span>(<span class="macro">format!</span>(
-                    <span class="string">&quot;unable to change the metadata for token_id {}&quot;</span>,
-                    <span class="ident">token_id</span>
-                ))),
-                <span class="bool-val">true</span> =&gt; {
-                    <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tkn_info</span> <span class="op">=</span> <span class="ident">tkn_info_op</span>.<span class="ident">unwrap</span>();
-                    <span class="ident">tkn_info</span>.<span class="ident">public_metadata</span> <span class="op">=</span> <span class="ident">public_metadata</span>;
-                    <span class="ident">tkn_info</span>.<span class="ident">private_metadata</span> <span class="op">=</span> <span class="ident">private_metadata</span>;
-                    <span class="ident">tkn_info_w</span>(<span class="kw-2">&amp;mut</span> <span class="ident">deps</span>.<span class="ident">storage</span>).<span class="ident">save</span>(<span class="ident">token_id</span>.<span class="ident">as_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">tkn_info</span>)<span class="question-mark">?</span>;
-                }
-            }
+    <span class="comment">// control flow based on `allow_update`</span>
+    <span class="kw">match</span> <span class="ident">allow_update</span> {
+        <span class="bool-val">false</span> =&gt; <span class="kw">return</span> <span class="prelude-val">Err</span>(<span class="ident">StdError::generic_err</span>(<span class="macro">format!</span>(
+            <span class="string">&quot;unable to change the metadata for token_id {}&quot;</span>,
+            <span class="ident">token_id</span>
+        ))),
+        <span class="bool-val">true</span> =&gt; {
+            <span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">tkn_info</span> <span class="op">=</span> <span class="ident">tkn_info_op</span>.<span class="ident">unwrap</span>();
+            <span class="kw">if</span> <span class="ident">public_metadata</span>.<span class="ident">is_some</span>() { <span class="ident">tkn_info</span>.<span class="ident">public_metadata</span> <span class="op">=</span> <span class="ident">public_metadata</span> };
+            <span class="kw">if</span> <span class="ident">private_metadata</span>.<span class="ident">is_some</span>() { <span class="ident">tkn_info</span>.<span class="ident">private_metadata</span> <span class="op">=</span> <span class="ident">private_metadata</span> };
+            <span class="ident">tkn_info_w</span>(<span class="kw-2">&amp;mut</span> <span class="ident">deps</span>.<span class="ident">storage</span>).<span class="ident">save</span>(<span class="ident">token_id</span>.<span class="ident">as_bytes</span>(), <span class="kw-2">&amp;</span><span class="ident">tkn_info</span>)<span class="question-mark">?</span>;
         }
     }
 
@@ -2000,7 +1990,7 @@
     }
 
     <span class="prelude-val">Ok</span>(<span class="ident">HandleResponse</span> {
-        <span class="ident">messages</span>: <span class="macro">vec!</span>[],
+        <span class="ident">messages</span>,
         <span class="ident">log</span>: <span class="macro">vec!</span>[],
         <span class="ident">data</span>: <span class="prelude-val">Some</span>(<span class="ident">to_binary</span>(<span class="kw-2">&amp;</span><span class="ident">HandleAnswer::BatchSend</span> { <span class="ident">status</span>: <span class="ident">Success</span> })<span class="question-mark">?</span>)
     })
