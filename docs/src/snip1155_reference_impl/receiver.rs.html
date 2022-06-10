@@ -75,6 +75,12 @@
 <span id="70">70</span>
 <span id="71">71</span>
 <span id="72">72</span>
+<span id="73">73</span>
+<span id="74">74</span>
+<span id="75">75</span>
+<span id="76">76</span>
+<span id="77">77</span>
+<span id="78">78</span>
 </pre><pre class="rust"><code><span class="attribute">#![<span class="ident">allow</span>(<span class="ident">clippy::field_reassign_with_default</span>)]</span> <span class="comment">// This is triggered in `#[derive(JsonSchema)]`</span>
 
 <span class="kw">use</span> <span class="ident">schemars::JsonSchema</span>;
@@ -88,12 +94,18 @@
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Clone</span>, <span class="ident">PartialEq</span>, <span class="ident">JsonSchema</span>, <span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;snake_case&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">struct</span> <span class="ident">Snip1155ReceiveMsg</span> {
+    <span class="doccomment">/// the address that sent the `Send` or `BatchSend` message</span>
     <span class="kw">pub</span> <span class="ident">sender</span>: <span class="ident">HumanAddr</span>,
+    <span class="doccomment">/// unique token_id `String`</span>
     <span class="kw">pub</span> <span class="ident">token_id</span>: <span class="ident">String</span>,
+    <span class="doccomment">/// the previous owner of the tokens being transferred</span>
     <span class="kw">pub</span> <span class="ident">from</span>: <span class="ident">HumanAddr</span>,
+    <span class="doccomment">/// amount of tokens being transferred</span>
     <span class="kw">pub</span> <span class="ident">amount</span>: <span class="ident">Uint128</span>,
+    <span class="doccomment">/// optional memo</span>
     <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">skip_serializing_if</span> <span class="op">=</span> <span class="string">&quot;Option::is_none&quot;</span>)]</span>
     <span class="kw">pub</span> <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
+    <span class="doccomment">/// optional message</span>
     <span class="kw">pub</span> <span class="ident">msg</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Binary</span><span class="op">&gt;</span>,
 }
 

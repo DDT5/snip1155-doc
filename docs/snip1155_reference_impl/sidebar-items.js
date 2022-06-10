@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["handles",""],["msg",""],["queries",""],["state",""]]});
+initSidebarItems({"mod":[["handles",""],["msg",""],["queries",""],["receiver",""],["state",""]]});

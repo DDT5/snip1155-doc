@@ -411,6 +411,60 @@
 <span id="406">406</span>
 <span id="407">407</span>
 <span id="408">408</span>
+<span id="409">409</span>
+<span id="410">410</span>
+<span id="411">411</span>
+<span id="412">412</span>
+<span id="413">413</span>
+<span id="414">414</span>
+<span id="415">415</span>
+<span id="416">416</span>
+<span id="417">417</span>
+<span id="418">418</span>
+<span id="419">419</span>
+<span id="420">420</span>
+<span id="421">421</span>
+<span id="422">422</span>
+<span id="423">423</span>
+<span id="424">424</span>
+<span id="425">425</span>
+<span id="426">426</span>
+<span id="427">427</span>
+<span id="428">428</span>
+<span id="429">429</span>
+<span id="430">430</span>
+<span id="431">431</span>
+<span id="432">432</span>
+<span id="433">433</span>
+<span id="434">434</span>
+<span id="435">435</span>
+<span id="436">436</span>
+<span id="437">437</span>
+<span id="438">438</span>
+<span id="439">439</span>
+<span id="440">440</span>
+<span id="441">441</span>
+<span id="442">442</span>
+<span id="443">443</span>
+<span id="444">444</span>
+<span id="445">445</span>
+<span id="446">446</span>
+<span id="447">447</span>
+<span id="448">448</span>
+<span id="449">449</span>
+<span id="450">450</span>
+<span id="451">451</span>
+<span id="452">452</span>
+<span id="453">453</span>
+<span id="454">454</span>
+<span id="455">455</span>
+<span id="456">456</span>
+<span id="457">457</span>
+<span id="458">458</span>
+<span id="459">459</span>
+<span id="460">460</span>
+<span id="461">461</span>
+<span id="462">462</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">cosmwasm_std</span>::{<span class="ident">Uint128</span>, <span class="ident">HumanAddr</span>, <span class="ident">Binary</span>};
 <span class="kw">use</span> <span class="ident">schemars::JsonSchema</span>;
 <span class="kw">use</span> <span class="ident">serde</span>::{<span class="ident">Deserialize</span>, <span class="ident">Serialize</span>};
@@ -452,6 +506,10 @@
 <span class="comment">// Handle Messages</span>
 <span class="comment">/////////////////////////////////////////////////////////////////////////////////</span>
 
+<span class="doccomment">/// Handle messages to SNIP1155 contract. </span>
+<span class="doccomment">/// </span>
+<span class="doccomment">/// Mostly responds with `HandleAnswer { &lt;variant_name&gt;: { status: success }}` if successful.</span>
+<span class="doccomment">/// See [HandleAnswer](crate::msg::HandleAnswer) for the response messages for each variant.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">JsonSchema</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;snake_case&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">HandleMsg</span> {
@@ -461,11 +519,18 @@
         <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// mints additional tokens of existing fungible token_ids, if configuration allows this, ie</span>
+    <span class="doccomment">/// `enable_mint == true`.</span>
+    <span class="doccomment">/// Only minters can access this function</span>
     <span class="ident">MintTokens</span> {
         <span class="ident">mint_tokens</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TokenAmount</span><span class="op">&gt;</span>,
         <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// burns existing tokens, if configuration allows this, ie</span>
+    <span class="doccomment">/// `enable_burn == true`.</span>
+    <span class="doccomment">/// Only owners can burn their own tokens in the base specifications. Flexibility is built</span>
+    <span class="doccomment">/// into the contract functions to allow other addresses to burn tokens, allowed in additional specifications.</span>
     <span class="ident">BurnTokens</span> {
         <span class="ident">burn_tokens</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TokenAmount</span><span class="op">&gt;</span>,
         <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
@@ -485,6 +550,9 @@
         <span class="doccomment">/// between variants. Not strictly necessary.</span>
         <span class="ident">private_metadata</span>: <span class="ident">Box</span><span class="op">&lt;</span><span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Metadata</span><span class="op">&gt;</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// transfers one or more tokens of a single token_id. Other third address can perform this function</span>
+    <span class="doccomment">/// if it has permission to transfer. ie: if addr3 can call this function to transfer tokens from addr0</span>
+    <span class="doccomment">/// to addr2, if addr0 gives addr3 enough transfer allowance.</span>
     <span class="ident">Transfer</span> {
         <span class="ident">token_id</span>: <span class="ident">String</span>,
         <span class="comment">// equivalent to `owner` in SNIP20. Tokens are sent from this address. </span>
@@ -494,10 +562,13 @@
         <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// performs `transfer`s of multiple token_ids in a single transaction</span>
     <span class="ident">BatchTransfer</span> {
         <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">TransferAction</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// similar to transfer, but also sends a cosmos message. The recipient needs to be a contract that </span>
+    <span class="doccomment">/// has a SNIP1155Receive handle function. See [receiver](crate::receiver) for more information. </span>
     <span class="ident">Send</span> {
         <span class="ident">token_id</span>: <span class="ident">String</span>,
         <span class="comment">// equivalent to `owner` in SNIP20. Tokens are sent from this address. </span>
@@ -509,10 +580,22 @@
         <span class="ident">memo</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// performs `send` of multiple token_ids in a single transaction</span>
     <span class="ident">BatchSend</span> {
         <span class="ident">actions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">SendAction</span><span class="op">&gt;</span>,
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// allows an owner of token_ids to change transfer or viewership permissions to other addresses.  </span>
+    <span class="doccomment">/// </span>
+    <span class="doccomment">/// The base specification has three types of permissions:</span>
+    <span class="doccomment">/// * view balance permission: owner can allow another address to view owner&#39;s balance of specific token_ids</span>
+    <span class="doccomment">/// * view private metadata: owner can allow another address to view private metadata of specific token_ids</span>
+    <span class="doccomment">/// * transfer allowance: owner can give permission to another address to transfer tokens up to a certain limit (cumulatively)</span>
+    <span class="doccomment">/// Owners can set an [expiry](crate::state::expiration) for each of these permissions. </span>
+    <span class="doccomment">/// </span>
+    <span class="doccomment">/// SNIP1155 gives flexibility for permissions to have any combination of</span>
+    <span class="doccomment">/// * type of permission granted</span>
+    <span class="doccomment">/// * on which token_ids</span>
     <span class="ident">GivePermission</span> {
         <span class="doccomment">/// address being granted/revoked permission</span>
         <span class="ident">allowed_address</span>: <span class="ident">HumanAddr</span>,
@@ -531,7 +614,9 @@
         <span class="doccomment">/// optional message length padding</span>
         <span class="ident">padding</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
-    <span class="doccomment">/// Removes all permissions that a specific owner has granted to a specific address, for a specific token_id </span>
+    <span class="doccomment">/// Removes all permissions that a specific owner has granted to a specific address, for a specific token_id.</span>
+    <span class="doccomment">/// A permission grantee can use this function to renounce a permission it has been given.</span>
+    <span class="doccomment">/// For owners, the `GivePermission` message can be used instead to have the same effect as `RevokePermission`.</span>
     <span class="ident">RevokePermission</span> {
         <span class="ident">token_id</span>: <span class="ident">String</span>,
         <span class="doccomment">/// token owner</span>
@@ -592,6 +677,8 @@
     },
 }
 
+<span class="doccomment">/// Handle answers in the `data` field of `HandleResponse`. See</span>
+<span class="doccomment">/// [HandleMsg](crate::msg::HandleMsg), which has more details</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">JsonSchema</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;snake_case&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">HandleAnswer</span> {
@@ -623,9 +710,13 @@
 <span class="comment">// Query messages</span>
 <span class="comment">/////////////////////////////////////////////////////////////////////////////////</span>
 
+
+<span class="doccomment">/// Query messages to SNIP1155 contract. See [QueryAnswer](crate::msg::QueryAnswer) </span>
+<span class="doccomment">/// for the response messages for each variant, which has more detail.</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">Clone</span>, <span class="ident">Debug</span>, <span class="ident">JsonSchema</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;snake_case&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">QueryMsg</span> {
+    <span class="doccomment">/// returns public information of the SNIP1155 contract</span>
     <span class="ident">ContractInfo</span> {  },
     <span class="ident">Balance</span> {
         <span class="ident">owner</span>: <span class="ident">HumanAddr</span>,
@@ -725,30 +816,45 @@
     },
 }
 
+<span class="doccomment">/// the query responses for each [QueryMsg](crate::msg::QueryMsg) variant</span>
 <span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Serialize</span>, <span class="ident">Deserialize</span>, <span class="ident">JsonSchema</span>, <span class="ident">Debug</span>)]</span>
 <span class="attribute">#[<span class="ident">serde</span>(<span class="ident">rename_all</span> <span class="op">=</span> <span class="string">&quot;snake_case&quot;</span>)]</span>
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">QueryAnswer</span> {
+    <span class="doccomment">/// returns contract-level information:</span>
     <span class="ident">ContractInfo</span> {
+        <span class="comment">// the address of the admin, or `None` for an admin-free contract</span>
         <span class="ident">admin</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">HumanAddr</span><span class="op">&gt;</span>,
+        <span class="doccomment">/// the list of curators in the contract</span>
         <span class="ident">curators</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">HumanAddr</span><span class="op">&gt;</span>,
+        <span class="doccomment">/// the list of all token_ids that have been curated</span>
         <span class="ident">all_token_ids</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// returns balance of a specific token_id. Owners can give permission to other addresses to query their balance</span>
     <span class="ident">Balance</span> {
         <span class="ident">amount</span>: <span class="ident">Uint128</span>,
     },
+    <span class="doccomment">/// returns all token_id balances owned by an address. Only owners can use this query</span>
     <span class="ident">AllBalances</span>(<span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">OwnerBalance</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// all permissions related to a particular address. Note that &quot;curation&quot; is not recorded as a transaction per se, but</span>
+    <span class="doccomment">/// the tokens minted as part of the initial_balances set by the curator is recorded under `TxAction::Mint`  </span>
     <span class="ident">TransactionHistory</span> {
         <span class="ident">txs</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Tx</span><span class="op">&gt;</span>,
         <span class="ident">total</span>: <span class="ident">u64</span>,
     },
     <span class="ident">Permission</span>(<span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Permission</span><span class="op">&gt;</span>),
+    <span class="doccomment">/// all permissions granted, viewable by the permission granter.</span>
+    <span class="doccomment">/// Users or applications can match the permission_keys that corresponds to each permission as</span>
+    <span class="doccomment">/// they have a similar order, ie: the index of `permission_keys` vector corresponds to the index </span>
+    <span class="doccomment">/// of the `permissions` vector.</span>
     <span class="ident">AllPermissions</span>{
         <span class="ident">permission_keys</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">PermissionKey</span><span class="op">&gt;</span>,
         <span class="ident">permissions</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">Permission</span><span class="op">&gt;</span>,
+        <span class="doccomment">/// the total number of permission entries stored for a given granter, which may include &quot;blank&quot; </span>
+        <span class="doccomment">/// permissions, ie: where all permissions are set to `false` or `Uint128(0)`</span>
         <span class="ident">total</span>: <span class="ident">u64</span>,
     },
     <span class="ident">TokenIdPublicInfo</span> {
-        <span class="doccomment">/// token_id_info.private_metadata will = None</span>
+        <span class="doccomment">/// token_id_info.private_metadata will always = None</span>
         <span class="ident">token_id_info</span>: <span class="ident">StoredTokenInfo</span>,
         <span class="doccomment">/// if public_total_supply == false, total_supply = None</span>
         <span class="ident">total_supply</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Uint128</span><span class="op">&gt;</span>,
@@ -766,6 +872,8 @@
     <span class="ident">RegisteredCodeHash</span> {
         <span class="ident">code_hash</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">String</span><span class="op">&gt;</span>,
     },
+    <span class="doccomment">/// returned when an viewing_key-specific errors occur during a user&#39;s attempt to </span>
+    <span class="doccomment">/// perform an authenticated query </span>
     <span class="ident">ViewingKeyError</span> {
         <span class="ident">msg</span>: <span class="ident">String</span>,
     },

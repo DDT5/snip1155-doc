@@ -1,0 +1,1 @@
+initSidebarItems({"enum":[["ReceiverHandleMsg",""]],"struct":[["Snip1155ReceiveMsg","Snip1155ReceiveMsg should be de/serialized under `Snip1155Receive()` variant in a HandleMsg"]]});

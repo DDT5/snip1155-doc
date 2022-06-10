@@ -275,6 +275,14 @@
 <span id="270">270</span>
 <span id="271">271</span>
 <span id="272">272</span>
+<span id="273">273</span>
+<span id="274">274</span>
+<span id="275">275</span>
+<span id="276">276</span>
+<span id="277">277</span>
+<span id="278">278</span>
+<span id="279">279</span>
+<span id="280">280</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::<span class="kw-2">*</span>;
 
 <span class="kw">use</span> <span class="ident">schemars::JsonSchema</span>;
@@ -366,11 +374,14 @@
     },
     <span class="doccomment">/// no `enable_mint` option because NFT can be minted only once using `CurateTokenIds`</span>
     <span class="ident">Nft</span> {
+        <span class="doccomment">/// NFTs&#39; minters cannot mint additional tokens, but may be able to change metadata</span>
+        <span class="ident">minters</span>: <span class="ident">Vec</span><span class="op">&lt;</span><span class="ident">HumanAddr</span><span class="op">&gt;</span>,
         <span class="doccomment">/// total supply can be zero if the token has been burnt</span>
         <span class="ident">public_total_supply</span>: <span class="ident">bool</span>,
         <span class="ident">owner_is_public</span>: <span class="ident">bool</span>,
         <span class="ident">enable_burn</span>: <span class="ident">bool</span>,
         <span class="ident">owner_may_update_metadata</span>: <span class="ident">bool</span>,
+        <span class="ident">minter_may_update_metadata</span>: <span class="ident">bool</span>,
     }
 }
 
@@ -400,23 +411,24 @@
                 }
             },
             <span class="ident">TknConfig::Nft</span> { 
+                <span class="ident">minters</span>,
                 <span class="ident">public_total_supply</span>, 
                 <span class="ident">owner_is_public</span>, 
                 <span class="ident">enable_burn</span>, 
-                <span class="ident">owner_may_update_metadata</span> 
+                <span class="ident">owner_may_update_metadata</span>, 
+                <span class="ident">minter_may_update_metadata</span>
             } =&gt; {
                 <span class="ident">TknConfigFlat</span> {
                     <span class="ident">is_nft</span>: <span class="bool-val">true</span>,
-                    <span class="doccomment">/// NFTs have no minters</span>
-                    <span class="ident">minters</span>: <span class="macro">vec!</span>[],
+                    <span class="doccomment">/// NFTs&#39; minters cannot mint additional tokens, but may be able to change metadata</span>
+                    <span class="ident">minters</span>: <span class="ident">minters</span>.<span class="ident">clone</span>(),
                     <span class="ident">decimals</span>: <span class="number">0_u8</span>,
                     <span class="ident">public_total_supply</span>: <span class="kw-2">*</span><span class="ident">public_total_supply</span>,
                     <span class="ident">owner_is_public</span>: <span class="kw-2">*</span><span class="ident">owner_is_public</span>,
                     <span class="doccomment">/// NFT can be minted only once using `CurateTokenIds`</span>
                     <span class="ident">enable_mint</span>: <span class="bool-val">false</span>,
                     <span class="ident">enable_burn</span>: <span class="kw-2">*</span><span class="ident">enable_burn</span>,
-                    <span class="doccomment">/// NFTs have no minters</span>
-                    <span class="ident">minter_may_update_metadata</span>: <span class="bool-val">false</span>,
+                    <span class="ident">minter_may_update_metadata</span>: <span class="kw-2">*</span><span class="ident">minter_may_update_metadata</span>,
                     <span class="ident">owner_may_update_metadata</span>: <span class="kw-2">*</span><span class="ident">owner_may_update_metadata</span>,
                 }
             },
@@ -439,10 +451,12 @@
     <span class="attribute">#[<span class="ident">cfg</span>(<span class="ident">test</span>)]</span>
     <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">default_nft</span>() -&gt; <span class="self">Self</span> {
         <span class="ident">TknConfig::Nft</span> { 
+            <span class="ident">minters</span>: <span class="macro">vec!</span>[],
             <span class="ident">public_total_supply</span>: <span class="bool-val">true</span>, 
             <span class="ident">owner_is_public</span>: <span class="bool-val">true</span>,
             <span class="ident">enable_burn</span>: <span class="bool-val">true</span>, 
             <span class="ident">owner_may_update_metadata</span>: <span class="bool-val">true</span>, 
+            <span class="ident">minter_may_update_metadata</span>: <span class="bool-val">true</span>,
         }
     }
 }
@@ -466,10 +480,12 @@
         <span class="kw">match</span> <span class="self">self</span>.<span class="ident">is_nft</span> {
             <span class="bool-val">true</span> =&gt; {
                 <span class="ident">TknConfig::Nft</span> { 
+                    <span class="ident">minters</span>: <span class="self">self</span>.<span class="ident">minters</span>.<span class="ident">clone</span>(),
                     <span class="ident">public_total_supply</span>: <span class="self">self</span>.<span class="ident">public_total_supply</span>, 
                     <span class="ident">owner_is_public</span>: <span class="self">self</span>.<span class="ident">owner_is_public</span>, 
                     <span class="ident">enable_burn</span>: <span class="self">self</span>.<span class="ident">enable_burn</span>, 
-                    <span class="ident">owner_may_update_metadata</span>: <span class="self">self</span>.<span class="ident">owner_may_update_metadata</span> 
+                    <span class="ident">owner_may_update_metadata</span>: <span class="self">self</span>.<span class="ident">owner_may_update_metadata</span>,
+                    <span class="ident">minter_may_update_metadata</span>: <span class="self">self</span>.<span class="ident">minter_may_update_metadata</span>,
                 }
             },
             <span class="bool-val">false</span> =&gt; {

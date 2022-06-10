@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["query","contract query function. See QueryMsg for the api"]]});
+initSidebarItems({"fn":[["query","contract query function. See QueryMsg and  QueryAnswer for the api"]]});

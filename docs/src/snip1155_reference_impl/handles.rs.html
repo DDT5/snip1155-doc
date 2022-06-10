@@ -1390,6 +1390,7 @@
 <span id="1385">1385</span>
 <span id="1386">1386</span>
 <span id="1387">1387</span>
+<span id="1388">1388</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="ident">cosmwasm_std</span>::{
     <span class="ident">Env</span>, <span class="ident">Extern</span>, <span class="ident">Storage</span>, <span class="ident">Api</span>, <span class="ident">Querier</span>, 
     <span class="ident">InitResponse</span>, <span class="ident">HandleResponse</span>, <span class="ident">Binary</span>, <span class="ident">to_binary</span>, <span class="ident">log</span>,
@@ -1484,7 +1485,8 @@
 <span class="comment">// Handles</span>
 <span class="comment">/////////////////////////////////////////////////////////////////////////////////</span>
 
-<span class="doccomment">/// contract handle function. See [HandleMsg](crate::msg::HandleMsg) for the api</span>
+<span class="doccomment">/// contract handle function. See [HandleMsg](crate::msg::HandleMsg) and </span>
+<span class="doccomment">/// [HandleAnswer](crate::msg::HandleAnswer) for the api</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">handle</span><span class="op">&lt;</span><span class="ident">S</span>: <span class="ident">Storage</span>, <span class="ident">A</span>: <span class="ident">Api</span>, <span class="ident">Q</span>: <span class="ident">Querier</span><span class="op">&gt;</span>(
     <span class="ident">deps</span>: <span class="kw-2">&amp;mut</span> <span class="ident">Extern</span><span class="op">&lt;</span><span class="ident">S</span>, <span class="ident">A</span>, <span class="ident">Q</span><span class="op">&gt;</span>,
     <span class="ident">env</span>: <span class="ident">Env</span>,
