@@ -1,1 +1,1 @@
-initSidebarItems({"fn":[["handle","contract handle function. See HandleMsg and  HandleAnswer for the api"],["init","instantiation function. See InitMsg for the api"]]});
+window.SIDEBAR_ITEMS = {"fn":["execute","instantiate"]};

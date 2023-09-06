@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["handles",""],["msg",""],["queries",""],["receiver",""],["state",""]]});
+window.SIDEBAR_ITEMS = {"mod":["handles","msg","queries","receiver","state"]};
